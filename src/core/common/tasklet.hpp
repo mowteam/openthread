@@ -93,7 +93,7 @@ public:
             void     Clear(void) { mTail = nullptr; }
             bool     IsEmpty(void) const { return (mTail == nullptr); }
             void     PostTasklet(Tasklet &aTasklet);
-            void     RemoveTasklet(Tasklet &aTasklet);
+            bool     RemoveTasklet(Tasklet &aTasklet);
             Tasklet *PopTasklet(void);
 
         private:

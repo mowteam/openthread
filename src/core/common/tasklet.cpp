@@ -50,8 +50,10 @@ void Tasklet::Unpost(void)
 {
     if (IsPosted())
     {
-        Get<Scheduler>().mPostedQueue.RemoveTasklet(*this);
-        Get<Scheduler>().mRunningQueue.RemoveTasklet(*this);
+        if (!Get<Scheduler>().mPostedQueue.RemoveTasklet(*this))
+        {
+            Get<Scheduler>().mRunningQueue.RemoveTasklet(*this);
+        }
     }
 }
 
@@ -73,9 +75,10 @@ void Tasklet::Scheduler::Queue::PostTasklet(Tasklet &aTasklet)
     }
 }
 
-void Tasklet::Scheduler::Queue::RemoveTasklet(Tasklet &aTasklet)
+bool Tasklet::Scheduler::Queue::RemoveTasklet(Tasklet &aTasklet)
 {
-    Tasklet *prev = mTail;
+    bool     removed = false;
+    Tasklet *prev    = mTail;
 
     VerifyOrExit(!IsEmpty());
 
@@ -97,8 +100,10 @@ void Tasklet::Scheduler::Queue::RemoveTasklet(Tasklet &aTasklet)
         mTail = (prev != &aTasklet) ? prev : nullptr;
     }
 
+    removed = true;
+
 exit:
-    return;
+    return removed;
 }
 
 Tasklet *Tasklet::Scheduler::Queue::PopTasklet(void)
