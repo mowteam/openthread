@@ -1291,6 +1291,8 @@ Error CoapBase::ProcessBlock2Request(Msg &aRxMsg, const ResourceBlockWise &aReso
 
     responseBlockInfo.mBlockNumber = msgBlockInfo.GetBlockOffsetPosition() / responseBlockInfo.GetBlockSize();
 
+    VerifyOrExit(mLastResponse != nullptr, error = kErrorInvalidState);
+
     // Copy options from last response
     SuccessOrExit(error = iterator.Init(*mLastResponse));
 

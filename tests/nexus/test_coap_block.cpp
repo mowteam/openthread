@@ -188,6 +188,23 @@ void TestCoapBlock(void)
     VerifyOrQuit(sTransmitHookCalled); // Leader should transmit blocks
     VerifyOrQuit(sReceiveHookCalled);  // Router should receive blocks
 
+    message = router.Get<Coap::ApplicationCoap>().NewMessage();
+    VerifyOrQuit(message != nullptr);
+    SuccessOrQuit(message->Init(Coap::kTypeConfirmable, Coap::kCodeGet));
+    SuccessOrQuit(message->AppendUriPathOptions("test"));
+
+    blockInfo.mBlockNumber = 1;
+    blockInfo.mBlockSzx    = Coap::kBlockSzx16;
+    blockInfo.mMoreBlocks  = false;
+    SuccessOrQuit(message->AppendBlockOption(Coap::kOptionBlock2, blockInfo));
+
+    SuccessOrQuit(router.Get<Coap::ApplicationCoap>().SendMessageWithResponseHandlerSeparateParams(
+        *message, messageInfo, nullptr, nullptr, nullptr, nullptr, nullptr));
+
+    nexus.AdvanceTime(5 * 1000);
+
+    VerifyOrQuit(leader.Get<Mle::Mle>().IsLeader());
+
     // Router sends PUT request
     message = router.Get<Coap::ApplicationCoap>().NewMessage();
     VerifyOrQuit(message != nullptr);
