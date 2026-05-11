@@ -532,7 +532,7 @@ void Logger::LogSpinelFrame(const uint8_t *aFrame, uint16_t aLength, bool aTx)
         debugString[stringLength] = '\0';
         start += Snprintf(start, static_cast<uint32_t>(end - start), ", debug:%s", debugString);
     }
-    break; 
+    break;
 
     case SPINEL_PROP_STREAM_LOG:
     {
