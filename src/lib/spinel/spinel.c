@@ -614,7 +614,7 @@ static spinel_ssize_t spinel_datatype_vunpack_(bool           in_place,
 
             if (in_place)
             {
-                require_action(NULL != block_len_ptr && *block_len_ptr >= block_len, bail, (ret = -1, errno = EINVAL));
+                require_action(NULL != block_len_ptr && *block_len_ptr > block_len, bail, (ret = -1, errno = EINVAL));
                 memcpy(arg_ptr, block_ptr, block_len);
             }
             else
